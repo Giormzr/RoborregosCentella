@@ -1,35 +1,87 @@
-int salida = 3; //activa el motor
+CPP
 
-// sensor ultrasonico frontal
-int trigPin = 2; 
-int echoPin = 4;
+#include <Arduino.h>
 
-// sensor izq
-int trigPinIzq = 7;
-int trigPinIzq = 8;
+class SensorUltrasonico 
+{
+  private:
+    int pinTrigger;
+    int pinEcho;
 
-// sensor der
-int trigPinDer = 12;
-int trigPinDer = 13;
+  public:
+    SensorUltrasonico(int _pT, int _pE)
+    {
+      pinTrigger = _pT;
+      pinEcho = _pE;
 
-void setup() {
-  // sensor frontal
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+      pinMode(_pT, OUTPUT);
+      pinMode(_pE, INPUT);
+    }
 
-  // sensor izq
-  pinMode(trigPinIzq, OUTPUT);
-  pinMode(echoPinIzq, INPUT);
+    float medirDistancia()
+    {
+      digitalWrite(_pT, LOW);
+      delayMicroseconds (2);
 
-  // sensor der
-  pinMode(trigPinDer, OUTPUT);
-  pinMode(echoPinDer, INPUT);
+      digitalWrite(_pT, HIGH);
+      delayMicroseconds (10);
+      digitalWrite(_pT, LOW)
 
+      long tiempomedido = pulseIn(_pE, HIGH, 30000) //30000 es el timeout
+
+      if (tiempomedido == 0) return -1,0;
+
+      return (tiempomedido * 0.0343)/2.0;
+    }
+
+    //este se usa para detectar obstaculos, en el caso de Centellita, será para las paredes
+    bool obstaculo()
+    {
+      float distancia = medirDistancia();
+
+      if (distancia == -1,0) return false; //indica que no regresó la onda en el tiempo dado, por ende, no detecta pared a la distancia dada por el timeout
+
+      if (distancia <=5.0) //5.0 depende de la distancia a la que se busca detectar el obstáculo, en el caso de Centellita es de 5cm
+        {
+          return true;
+        }
+
+      return false; //si la distancia medida es mayor a 5, está libre para ir a esta zona
+    }
+};
+
+SensorUltrasonico sensorIzquierda(7,8);
+SensorUltrasonico sensorDerecha(12,13);
+SensorUltrasonico sensorFrontal(2,4);
+
+                                                 int salida = 3; //activa el motor
+
+void setup() 
+{
+  Serial.begin(115200);
+  Serial.println("sensores listos");
 }
 
-void loop() {
-  analogWrite(salida,127); //señal PWM a 50%
-  delay(2000);
-  analogWrite(salida,0); //señal PWM a 0%
+void loop() 
+{
+  bool paredIzquierda = sensorIzquierda.obstaculo();
+  bool paredDerecha = sensorDerecha.obstaculo();
+  bool paredFrontal = sensorFrontal.obstaculo();
 
+  if (paredIzquierda)
+  {
+    Serial.println("[Izquierda] Pared cerca")
+  }
+
+  if (paredDerecha)
+  {
+    Serial.println("[Derecha] Pared cerca")
+  }
+
+  if (paredFrontal)
+  {
+    Setial.println("[Frontal] Pared cerca")
+  }
+
+  delay (100);
 }
