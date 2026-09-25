@@ -4,53 +4,6 @@ CPP
 #include "Adafruit_TCS34725.h"
 
 
-class SensorUltrasonico 
-{
-  private:
-    int pinTrigger;
-    int pinEcho;
-
-  public:
-    SensorUltrasonico(int _pT, int _pE)
-    {
-      pinTrigger = _pT;
-      pinEcho = _pE;
-
-      pinMode(_pT, OUTPUT);
-      pinMode(_pE, INPUT);
-    }
-
-    float medirDistancia()
-    {
-      digitalWrite(_pT, LOW);
-      delayMicroseconds (2);
-
-      digitalWrite(_pT, HIGH);
-      delayMicroseconds (10);
-      digitalWrite(_pT, LOW)
-
-      long tiempoMedido = pulseIn(_pE, HIGH, 30000) //30000 es el timeout
-
-      if (tiempoMedido == 0) return -1,0;
-
-      return (tiempoMedido * 0.0343)/2.0;
-    }
-
-    //este se usa para detectar obstáculos, en el caso de Centellita, será para las paredes
-    bool obstaculo()
-    {
-      float distancia = medirDistancia();
-
-      if (distancia == -1,0) return false; //indica que no regresó la onda en el tiempo dado, por ende, no detecta pared a la distancia dada por el timeout
-
-      if (distancia <=5.0) //5.0 depende de la distancia a la que se busca detectar el obstáculo, en el caso de Centellita es de 5cm
-        {
-          return true;
-        }
-
-      return false; //si la distancia medida es mayor a 5, está libre para ir a esta zona
-    }
-}
 
 SensorUltrasonico sensorIzquierda(7,8);
 SensorUltrasonico sensorDerecha(12,13);
