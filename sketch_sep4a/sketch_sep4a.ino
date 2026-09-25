@@ -89,4 +89,10 @@ void loop()
 }
 
 
-class SensorColor
+class SensorColor {
+  private:
+
+  public:
+    int pinR = 9;
+    int pinG = 10;
+    int pinB = 11;
