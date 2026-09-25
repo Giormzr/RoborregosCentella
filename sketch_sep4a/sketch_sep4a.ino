@@ -1,6 +1,7 @@
 CPP
 
 #include <Arduino.h>
+#include "Adafruit_TCS34725.h"
 
 class SensorUltrasonico 
 {
@@ -27,14 +28,14 @@ class SensorUltrasonico
       delayMicroseconds (10);
       digitalWrite(_pT, LOW)
 
-      long tiempomedido = pulseIn(_pE, HIGH, 30000) //30000 es el timeout
+      long tiempoMedido = pulseIn(_pE, HIGH, 30000) //30000 es el timeout
 
-      if (tiempomedido == 0) return -1,0;
+      if (tiempoMedido == 0) return -1,0;
 
-      return (tiempomedido * 0.0343)/2.0;
+      return (tiempoMedido * 0.0343)/2.0;
     }
 
-    //este se usa para detectar obstaculos, en el caso de Centellita, será para las paredes
+    //este se usa para detectar obstáculos, en el caso de Centellita, será para las paredes
     bool obstaculo()
     {
       float distancia = medirDistancia();
@@ -48,7 +49,7 @@ class SensorUltrasonico
 
       return false; //si la distancia medida es mayor a 5, está libre para ir a esta zona
     }
-};
+}
 
 SensorUltrasonico sensorIzquierda(7,8);
 SensorUltrasonico sensorDerecha(12,13);
@@ -85,3 +86,6 @@ void loop()
 
   delay (100);
 }
+
+
+class SensorColor
