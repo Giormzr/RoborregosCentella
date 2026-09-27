@@ -40,7 +40,7 @@ SensorUltrasonico sensor1(TRIGGER_1, ECHO_1);
 SensorUltrasonico sensor2(TRIGGER_2, ECHO_2);
 SensorUltrasonico sensor3(TRIGGER_3, ECHO_3);
 
-SensorColor _______(_____,____);
+SensorColor sensorColor(PINR, PING, PINB);
 
 void avanzarCentellita()
 	{
@@ -86,12 +86,15 @@ void setup()
 	
 	
 	//SENSOR DE COLOR
+	sensorColor.iniciar();
 	
 	serial.printl("Centellita listo :p");
 }
 
 void loop ()
 {
+	sensorColor.procesarColor();
+	
 	bool paredSensor1 = sensor1.paredCerca();
 	bool paredSensor2 = sensor2.paredCerca();
 	bool paredSensor3 = sensor3.paredCerca();
@@ -152,13 +155,3 @@ void loop ()
 	
 	delay (50);
 }
-
-/////////////////////
-
-class SensorColor {
-  private:
-
-  public:
-    int pinR = 9;
-    int pinG = 10;
-    int pinB = 11;
