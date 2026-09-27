@@ -27,11 +27,11 @@ const int TRIGGER_3 = 12;
 const int ECHO_3 = 13;
 
 //sensor de color
-const int PINR = __;
-const int PING = __;
-const int PINB = __;
+const int PINR = 20;
+const int PING = 21;
+const int PINB = 22;
 
-//creacmos aquí los objetos
+//creamos aquí los objetos
 
 Motor motorA(IN1, IN2, ENA);
 Motor motorB(IN3, IN4, ENB);
