@@ -5,10 +5,8 @@
 
 class SensorColor {
 private:
-  Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
-  
-  //Pines para las salidas
-  int pinR, pinG, pinB;
+  Adafruit_TCS34725 tcs;
+  int pinR, pinG, pinB; //Pines para las salidas
 
 public:
     SensorColor(int pinRojo, int pinVerde, int pinAzul) 
