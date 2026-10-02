@@ -36,7 +36,7 @@ void Motor::inicializar()
   void Motor::frenar()
   {
   	digitalWrite(pinIN1, LOW);
-  	dgitalWrite(pinIN2, LOW);
+  	digitalWrite(pinIN2, LOW);
   	aplicarVelocidad(0);
   }
 
