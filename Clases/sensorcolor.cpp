@@ -51,5 +51,14 @@ void SensorColor::procesarColor() {
   analogWrite(pinG, G);
   analogWrite(pinB, B);
 
+  //Se guardan las lecturas para la meta
+  redVal = R; 
+  greenVal = G; 
+  blueVal = B;
+
   Serial.println(" R = " + String(R) + " G = " + String(G) + " B = " + String(B));
+
+  //Para evaluar la meta 
+  bool SensorColor::Rojo(){
+    return(redVal > greenVal && redVal > blueVal && redVal >  100);
 }
