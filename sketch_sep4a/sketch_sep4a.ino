@@ -122,7 +122,7 @@ void loop ()
 			sensorColor.procesarColor();
 
 			//Para el rojo de la meta
-			if (sensorColor.esRojo()){
+			if (sensorColor.Rojo()){
 				frenarCentellita();
 				estadoActual = LlegadaMeta;
 				break;
