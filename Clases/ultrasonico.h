@@ -8,14 +8,14 @@ private:
 	int pinEcho; //recibe la señal; cuando la recibe indica la distancia (tiempo que tarda en regresar la onda); entrada
 	
 public:
-	SensorUltrasonico(int _pT, int _pE)
+	SensorUltrasonico(int _pT, int _pE);
 
 	void inicializar();
     float medirDistancia();
 
   //aplicado en Centellita para que detecte la pared:
-  bool paredcerca()
-}
+  bool paredCerca();
+};
 
 #endif
 
