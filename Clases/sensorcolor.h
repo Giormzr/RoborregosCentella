@@ -16,9 +16,7 @@ public:
   bool iniciar() ;
   void procesarColor();
 
-  bool Rojo(); //
-  bool Verde(); //
-  bool Azul(); //
+  bool Rojo(); 
 
 };
 
