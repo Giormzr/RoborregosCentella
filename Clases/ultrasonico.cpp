@@ -35,7 +35,7 @@ bool SensorUltrasonico::paredcerca() {
 
   if (distancia == -1.0) return false; //No detecta pared (cuando la onda no regresa en el timeout dado)
 
-  if (distancia <= 5.0) {
+  if (distancia <= 7.0) {
     return true; //Aplica si detecta la pared 5cm o menos
   }
 
