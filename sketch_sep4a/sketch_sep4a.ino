@@ -4,32 +4,47 @@ CPP
 #include "motor.h"
 #include "sensorcolor.h"
 
+
+// #1 PWMA 23, AIN2 22, AIN1 21; PWMB 19, BIN2 18, BIN1 5; STBY 12
+// #2 PWMA 13, AIN2 15, AIN1 2; PWMB 17, BIN2 16, BIN1 4; STBY 12
 //motor A
-const int IN1 = 5;
-const int IN2 = 6;
-const int ENA = 7;
+const int IN1 = ;
+const int IN2 = ;
+const int ENA = ;
 
 //motor B
-const int IN3 = 15;
-const int IN4 = 16;
-const int ENB = 17;
+const int IN3 = ;
+const int IN4 = ;
+const int ENB = ;
+
+//motor C
+const int IN5 = ;
+const int IN6 = ;
+const int ENC = ;
+
+//motor D
+const int IN7 = ;
+const int IN8 = ;
+const int END = ;
+
+const int PIN_STBY = 12;
 
 //sensor ultrasonico 1
-const int TRIGGER_1 = 8;
-const int ECHO_1 = 9;
+const int TRIGGER_1 = ;
+const int ECHO_1 = ;
 
 //sensor ultrasonico 2
-const int TRIGGER_2 = 10;
-const int ECHO_2 = 11;
+const int TRIGGER_2 = ;
+const int ECHO_2 = ;
 
 //sensor ultrasonico 3
-const int TRIGGER_3 = 12;
-const int ECHO_3 = 13;
+const int TRIGGER_3 = ;
+const int ECHO_3 = ;
 
 //sensor de color
-const int PINR = 20;
-const int PING = 21;
-const int PINB = 22;
+const int PINR = ;
+const int PING = ;
+const int PINB = ;
 
 //creamos aquí los objetos
 
