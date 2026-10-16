@@ -19,6 +19,14 @@ void Motor::inicializar()
     frenar();
   }
 
+void Motor::aplicarVelocidad(int velocidad)
+	{
+	if (pinENA != -1)
+		{
+			analogWrite(pinENA, velocidad);
+		}
+	}
+
   void Motor::avanzar(int velocidad) 
   {
     digitalWrite(pinIN1, HIGH); //señal alta
@@ -39,4 +47,3 @@ void Motor::inicializar()
   	digitalWrite(pinIN2, LOW);
   	aplicarVelocidad(0);
   }
-
