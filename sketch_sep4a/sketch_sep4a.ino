@@ -29,15 +29,15 @@ const int END = ;
 
 const int PIN_STBY = 12;
 
-//sensor ultrasonico 1
+//sensor ultrasonico 1: FRENTE
 const int TRIGGER_1 = ;
 const int ECHO_1 = ;
 
-//sensor ultrasonico 2
+//sensor ultrasonico 2: DERECHA
 const int TRIGGER_2 = ;
 const int ECHO_2 = ;
 
-//sensor ultrasonico 3
+//sensor ultrasonico 3: IZQUIERDA
 const int TRIGGER_3 = ;
 const int ECHO_3 = ;
 
@@ -48,8 +48,10 @@ const int PINB = ;
 
 //creamos aquí los objetos
 
-Motor motorA(IN1, IN2, ENA);
-Motor motorB(IN3, IN4, ENB);
+Motor motorA(IN1, IN2, ENA); //Frontal Izquierdo
+Motor motorB(IN3, IN4, ENB); //Trasero Izquierdo
+Motor motorC(IN5, IN6, ENC); //Frontal Derecho
+Motor motorD(IN7, IN8. END); //Trasero Derecho
 
 SensorUltrasonico sensor1(TRIGGER_1, ECHO_1);
 SensorUltrasonico sensor2(TRIGGER_2, ECHO_2);
@@ -60,22 +62,22 @@ SensorColor sensorColor(PINR, PING, PINB);
 
 //Estructura para el historial de pasos (bonus point 1)
 
-enum estadoRobot { 
+enum EstadoRobot { 
 	Explorar, //Paredes y ultrasonicos
 	LlegadaMeta, //Se detiene cuando detecta el rojo de la meta
 	RegresarInicio, //Se regresa para el bonus 
 	Fin //Se apaga 
 };
 
-estadoRobot estadoActual = Explorar;
+EstadoRobot estadoActual = Explorar;
 
 enum Movimiento {AVANZAR, GiroIzq, GiroDer, RETROCEDER}; 
-Movimiento historialPasos[50]; //Guarda hasta 50 pasos
+Movimiento historialPasos[150]; //Guarda hasta 150 pasos
 int totalPasos = 0; //Inicia en 0
 
 //Para guardar el recorrido
 void registrarPaso(Movimiento paso){
-	if (totalPasos < 50){
+	if (totalPasos < 150){
 		historialPasos[totalPasos] = paso;
 		totalPasos++;
 	}
@@ -85,49 +87,65 @@ void avanzarCentellita()
 	{
 		motorA.avanzar();
 		motorB.avanzar();
+		motorC.avanzar();
+		motorD.avanzar();
 	}
 	
 void frenarCentellita()
 	{
 		motorA.frenar();
 		motorB.frenar();
+		motorC.frenar();
+		motorD.frenar();
 	}
 	
 void retrocederCentellita()
 	{
 		motorA.retroceder();
 		motorB.retroceder();
+		motorC.retroceder();
+		motorD.retroceder();
 	}
 	
 void girarDerechaCentellita()
 	{
 		motorA.avanzar();
-		motorB.retroceder();
+		motorB.avanzar();
+		motorC.retroceder();
+		motorD.retroceder();
 	}
 	
 void girarIzquierdaCentellita()
 	{
 		motorA.retroceder();
-		motorB.avanzar();
+		motorB.retroceder();
+		motorC.avanzar();
+		motorD.avanzar();
 	}
 	
 void setup()
-
 {
-	Serial.begin (9600);
+	Serial.begin (115200);
+	
+	pinMode(PIN_STBY, OUTPUT);
+	digitalWrite(PIN_STBY, HIGH);//habilita motores
 	
 	motorA.inicializar();
 	motorB.inicializar();
+	motorC.inicializar();
+	motorD.inicializar();
 	
 	sensor1.inicializar();
 	sensor2.inicializar();
 	sensor3.inicializar();
 	
-	
-	//SENSOR DE COLOR
-	sensorColor.iniciar();
+	if (!sensorColor.iniciar())
+	{
+		Serial.println("Sensor de color NO DETECTADO correctamente")	
+	}
 	
 	Serial.println("Centellita listo :p");
+	delay(2000);
 }
 
 void loop ()
@@ -135,6 +153,19 @@ void loop ()
 	switch (estadoActual){
 		case Explorar: {
 			sensorColor.procesarColor();
+			
+			if(sensorColor.Turquesa()){
+				Serial.println("cuadro TURQUESA detectado");
+			}
+			else if (sensorColor.Amarillo()){
+				Serial.println("cuadro AMARILLO detectado")
+			}
+			else if (sensorColor.Naranja()){
+				Serial.printl("cuadro NARANJA detectado")
+			}
+			else if (sensorColor.Rosa()){
+				Serial.printl("cuadro ROSA detectado")
+			}
 
 			//Para el rojo de la meta
 			if (sensorColor.Rojo()){
@@ -143,54 +174,51 @@ void loop ()
 				break;
 			}
 	
-	bool paredSensor1 = sensor1.paredCerca();
-	bool paredSensor2 = sensor2.paredCerca();
-	bool paredSensor3 = sensor3.paredCerca();
+		bool paredFrente = sensor1.paredCerca();
+		bool paredIzquierda = sensor2.paredCerca();
+		bool paredDerecha = sensor3.paredCerca();
 	
-	//asumiendo que "Sensor 1" es el de ENFRENTE, el "Sensor 2" es IZQUIERDA y el "Sensor 3" es DERECHA.
-	
-	if (paredSensor1)
-	{
-		Serial.println("pared cerca, buscando camino");
-		frenarCentellita();
-		delay(200);
-	
-	
-		if (!paredSensor2)
+		if (paredFrente)
 		{
-			Serial.println("pared izquierda, girando a la derecha");
+			Serial.println("pared enfrente, buscando camino...");
+			frenarCentellita();
+			delay(200);
+	
+			if (!paredIzquierda)
+			{
+			Serial.println("Izquierda libre, girando a la izquierda");
 			girarIzquierdaCentellita();
 			delay(400);
 			registrarPaso(GiroIzq);
-		}
-	
-		else if (!paredSensor3)
-		{
-			Serial.println("pared derecha, girando a la izquierda");
+			}
+		
+			else if (!paredDerecha)
+			{
+			Serial.println("Derecha libre, girando a la derecha");
 			girarDerechaCentellita();
 			delay(400);
 			registrarPaso(GiroDer);
-		}
+			}
 	
-		else 
-		{
-			Serial.println("pared en todos lados, retrocediendo");
+			else 
+			{
+			Serial.println("camino sin salida, retrocediendo...");
 			retrocederCentellita();
 			delay(600);
 			registrarPaso(RETROCEDER);
-		}
+			}
 	}
 	
 	else
 	{
-		if (paredSensor2)
+		if (paredIzquierda && !paredDercha)
 		{
 			Serial.println("pared izquierda, girando a la derecha");
 			girarDerechaCentellita();
 			delay(100);
 		}
 		
-		else if (paredSensor3)
+		else if (paredDerecha && !paredIzquierda)
 		{
 			Serial.println("pared derecha, girando a la izquierda");	
 			girarIzquierdaCentellita();
@@ -207,53 +235,65 @@ void loop ()
 	break;
 }
 
-case LlegadaMeta:
-	Serial.println("Meta Alcanzada! Preparando Bonus");
-	frenarCentellita();
-	delay(2000);
-	estadoActual = RegresarInicio;
-	break;
+	case LlegadaMeta:
+	{
+		Serial.println("Meta Alcanzada! Preparando Bonus");
+		frenarCentellita();
+		delay(2000);
+		estadoActual = RegresarInicio;
+		break;
+	}
 
-case RegresarInicio:
-	Serial.println("Iniciando recorrido de regreso");
+	case RegresarInicio:
+	{		
+		Serial.println("Iniciando recorrido de regreso");
 
-	//Bucle invertido para leer las decisiones tomadas
-	for (int i = totalPasos - 1; i>=0; i--){
-		switch (historialPasos[i]){
-
-			case GiroIzq:
+		//Bucle invertido para leer las decisiones tomadas
+		for (int i = totalPasos - 1; i>=0; i--){
+			switch (historialPasos[i])
+			{
+				case GiroIzq:
 				//Si giró a la izquierda de ida, gira a la derecha de regreso
 				girarDerechaCentellita();
 				delay(400);
 				break;
 
-			case GiroDer:
+				case GiroDer:
 				//Si giró a la derecha de ida, gira a la izquierda de regreso
 				girarIzquierdaCentellita();
 				delay(400);
 				break;
 
-			case AVANZAR:
+				case AVANZAR:
 				//El avance se queda igual
 				avanzarCentellita();
 				delay(400);
 				break;
 
-			case RETROCEDER:
+				case RETROCEDER:
 				//El retroceso de la ida se convierte en avance
 				avanzarCentellita();
 				delay(400);
 				break;
+			}
 		}
+	
 	frenarCentellita();
 	delay(200);
+	estadoActual = Fin;
+	break;
 }
 
-estadoActual = Fin;
-break;
-
-case Fin:
-	frenarCentellita();
-	Serial.println("Se ha completado el bonus");
-	break;
+	case Fin:
+	{
+		frenarCentellita();
+		Serial.println("Se ha completado el bonus");
+		while (true)
+		{
+		//bucle infinito para terminarlo
+			delay(1000);
+		}
+		break;
+	}
+}
 }
