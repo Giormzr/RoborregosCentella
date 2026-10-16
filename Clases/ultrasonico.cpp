@@ -21,7 +21,7 @@ float SensorUltrasonico::medirDistancia() {
   delayMicroseconds(10);
   digitalWrite(pinTrigger, LOW);  //Lanza la onda y apagamos la salida
 
-  long tiempomedido = pulseIn(pinEcho, HIGH, 1000); //Evaluar timeout conforme a la velocidad de Centellita
+  long tiempomedido = pulseIn(pinEcho, HIGH, 5000); 
 
   if (tiempomedido == 0) return -1.0;
 
@@ -30,15 +30,14 @@ float SensorUltrasonico::medirDistancia() {
 
 //Para que Centellita detecte la pared
 
-bool SensorUltrasonico::paredcerca() {
+bool SensorUltrasonico::paredCerca() {
   float distancia = medirDistancia();
 
   if (distancia == -1.0) return false; //No detecta pared (cuando la onda no regresa en el timeout dado)
 
   if (distancia <= 7.0) {
-    return true; //Aplica si detecta la pared 5cm o menos
+    return true; 
   }
 
-  return false; //Aplica si la distancia medida es mayor a 5cm; se pone para que Centellita no se confunda si se da el caso
+  return false; //Aplica si la distancia medida es mayor a 7cm; se pone para que Centellita no se confunda si se da el caso
 }
-
