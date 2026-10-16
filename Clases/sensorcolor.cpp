@@ -57,8 +57,25 @@ void SensorColor::procesarColor() {
   blueVal = B;
 
   Serial.println(" R = " + String(R) + " G = " + String(G) + " B = " + String(B));
+}
 
-  //Para evaluar la meta 
-  bool SensorColor::Rojo(){
-    return(redVal > greenVal && redVal > blueVal && redVal >  100);
+//Para evaluar la meta 
+bool SensorColor::Rojo(){
+    return(redVal > 130 && greenVal < 80 && blueVal < 80);
+}
+
+bool SensorColor::Turquesa(){
+	return(greenVal > 100 && blueVal > 100 && redVal < 100 && abs((int)greenVal - (int)blueVal) < 45);
+}
+
+bool SensorColor::Amarillo(){
+	return(redVal > 120 && greenVal > 120 && blueVal < 100 && redVal > blueVal);
+}
+
+bool SensorColor::Naranja(){
+	return(redVal > 120 && greenVal > 60 && greenVal < 160 && blueVal < 80 && redVal > greenVal);
+}
+
+bool SensorColor::Rosa(){
+	return(redVal > 100 && blueVal > 100 && greenVal < 90);
 }
