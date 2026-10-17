@@ -1,28 +1,31 @@
 #ifndef SENSORCOLOR_H
 #define SENSORCOLOR_H
 
-#include "Adafruit_TCS34725.h"
+#include <Arduino.h>
+#include <Wire.h>
 
 class SensorColor {
 private:
-  Adafruit_TCS34725 tcs;
-  int pinR, pinG, pinB; //Pines para las salidas
-  uint16_t redVal, greenVal, blueVal; //Guarda la intensidad del color que rebota
+  int pinR, pinG, pinB;
+  bool valido;
+  uint16_t rawR, rawG, rawB, rawC;
+  float rn, gn, bn;
+
+  void escribir(uint8_t reg, uint8_t val);
+  uint8_t leer8(uint8_t reg);
+  uint16_t leer16(uint8_t reg);
 
 public:
-  SensorColor(int pinRojo, int pinVerde, int pinAzul); 
+  SensorColor(int pinRojo, int pinVerde, int pinAzul);
 
-//inicializar el sensor
-  bool iniciar() ;
+  bool iniciar();
   void procesarColor();
 
-  bool Rojo(); 
-  bool Turquesa ();
-  bool Amarillo ();
-  bool Naranja ();
+  bool Rojo();
+  bool Turquesa();
+  bool Amarillo();
+  bool Naranja();
   bool Rosa();
-  
-
 };
 
 #endif
