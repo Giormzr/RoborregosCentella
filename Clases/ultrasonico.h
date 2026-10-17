@@ -1,6 +1,7 @@
 #ifndef ULTRASONICO_H
 #define ULTRASONICO_H
 
+#include <Arduino.h>
 class SensorUltrasonico 
 {
 private:
