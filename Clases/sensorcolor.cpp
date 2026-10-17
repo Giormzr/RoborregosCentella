@@ -79,3 +79,6 @@ bool SensorColor::Naranja(){
 bool SensorColor::Rosa(){
 	return(redVal > 100 && blueVal > 100 && greenVal < 90);
 }
+bool SensorColor::Rosa(){
+	return(redVal > 100 && blueVal > 100 && greenVal < 90);
+}
