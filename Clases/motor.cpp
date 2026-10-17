@@ -9,15 +9,15 @@ Motor::Motor(int  _in1, int _in2, int _ena){
 
 //Función para el control de PWM
 void Motor::inicializar()
-  {
-    pinMode(pinIN1, OUTPUT);
-    pinMode(pinIN2, OUTPUT);
-    if (pinENA != -1)
-    {
-      pinMode(pinENA, OUTPUT);
-    }
-    frenar();
-  }
+  {
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  if (pinENA != -1)
+  {
+  pinMode(pinENA, OUTPUT);
+  }
+  frenar();
+  }
 
 void Motor::aplicarVelocidad(int velocidad)
 	{
@@ -27,23 +27,23 @@ void Motor::aplicarVelocidad(int velocidad)
 		}
 	}
 
-  void Motor::avanzar(int velocidad) 
-  {
-    digitalWrite(pinIN1, HIGH); //señal alta
-    digitalWrite(pinIN2, LOW); //señal baja
-    aplicarVelocidad(velocidad);
-  }
+  void Motor::avanzar(int velocidad)
+  {
+  digitalWrite(pinIN1, HIGH); //señal alta
+  digitalWrite(pinIN2, LOW); //señal baja
+  aplicarVelocidad(velocidad);
+  }
 
-  void Motor::retroceder(int velocidad)
-  {
-    digitalWrite(pinIN1, LOW);
-    digitalWrite(pinIN2, HIGH);
-    aplicarVelocidad(velocidad);
-  }
-  
-  void Motor::frenar()
-  {
-  	digitalWrite(pinIN1, LOW);
-  	digitalWrite(pinIN2, LOW);
-  	aplicarVelocidad(0);
-  }
+  void Motor::retroceder(int velocidad)
+  {
+  digitalWrite(pinIN1, LOW);
+  digitalWrite(pinIN2, HIGH);
+  aplicarVelocidad(velocidad);
+  }
+ 
+  void Motor::frenar()
+  {
+  	digitalWrite(pinIN1, LOW);
+  	digitalWrite(pinIN2, LOW);
+  	aplicarVelocidad(0);
+  }
