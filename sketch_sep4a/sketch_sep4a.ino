@@ -1,57 +1,56 @@
-CPP
+#include <Arduino.h>
 
 #include "ultrasonico.h"
 #include "motor.h"
 #include "sensorcolor.h"
 
-
 // #1 PWMA 23, AIN2 22, AIN1 21; PWMB 19, BIN2 18, BIN1 5; STBY 12
 // #2 PWMA 13, AIN2 15, AIN1 2; PWMB 17, BIN2 16, BIN1 4; STBY 12
 //motor A
-const int IN1 = ;
-const int IN2 = ;
-const int ENA = ;
+const int IN1 = 21;
+const int IN2 = 22;
+const int ENA = 23;
 
 //motor B
-const int IN3 = ;
-const int IN4 = ;
-const int ENB = ;
+const int IN3 = 5;
+const int IN4 = 18;
+const int ENB = 19;
 
 //motor C
-const int IN5 = ;
-const int IN6 = ;
-const int ENC = ;
+const int IN5 = 30;
+const int IN6 = 31;
+const int ENC = 32;
 
 //motor D
-const int IN7 = ;
-const int IN8 = ;
-const int END = ;
+const int IN7 = 33;
+const int IN8 = 34;
+const int END = 35;
 
 const int PIN_STBY = 12;
 
 //sensor ultrasonico 1: FRENTE
-const int TRIGGER_1 = ;
-const int ECHO_1 = ;
+const int TRIGGER_1 = 36;
+const int ECHO_1 = 37;
 
 //sensor ultrasonico 2: DERECHA
-const int TRIGGER_2 = ;
-const int ECHO_2 = ;
+const int TRIGGER_2 = 38;
+const int ECHO_2 = 39;
 
 //sensor ultrasonico 3: IZQUIERDA
-const int TRIGGER_3 = ;
-const int ECHO_3 = ;
+const int TRIGGER_3 = 40;
+const int ECHO_3 = 41;
 
 //sensor de color
-const int PINR = ;
-const int PING = ;
-const int PINB = ;
+const int PINR = 42;
+const int PING = 43;
+const int PINB = 44;
 
 //creamos aquí los objetos
 
 Motor motorA(IN1, IN2, ENA); //Frontal Izquierdo
 Motor motorB(IN3, IN4, ENB); //Trasero Izquierdo
 Motor motorC(IN5, IN6, ENC); //Frontal Derecho
-Motor motorD(IN7, IN8. END); //Trasero Derecho
+Motor motorD(IN7, IN8, END); //Trasero Derecho
 
 SensorUltrasonico sensor1(TRIGGER_1, ECHO_1);
 SensorUltrasonico sensor2(TRIGGER_2, ECHO_2);
@@ -141,7 +140,7 @@ void setup()
 	
 	if (!sensorColor.iniciar())
 	{
-		Serial.println("Sensor de color NO DETECTADO correctamente")	
+		Serial.println("Sensor de color NO DETECTADO correctamente");	
 	}
 	
 	Serial.println("Centellita listo :p");
@@ -158,13 +157,13 @@ void loop ()
 				Serial.println("cuadro TURQUESA detectado");
 			}
 			else if (sensorColor.Amarillo()){
-				Serial.println("cuadro AMARILLO detectado")
+				Serial.println("cuadro AMARILLO detectado");
 			}
 			else if (sensorColor.Naranja()){
-				Serial.printl("cuadro NARANJA detectado")
+				Serial.println("cuadro NARANJA detectado");
 			}
 			else if (sensorColor.Rosa()){
-				Serial.printl("cuadro ROSA detectado")
+				Serial.println("cuadro ROSA detectado");
 			}
 
 			//Para el rojo de la meta
@@ -211,7 +210,7 @@ void loop ()
 	
 	else
 	{
-		if (paredIzquierda && !paredDercha)
+		if (paredIzquierda && !paredDerecha)
 		{
 			Serial.println("pared izquierda, girando a la derecha");
 			girarDerechaCentellita();
