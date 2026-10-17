@@ -10,10 +10,10 @@ private:
   uint16_t redVal, greenVal, blueVal; //Guarda la intensidad del color que rebota
 
 public:
-    SensorColor(int pinRojo, int pinVerde, int pinAzul); 
+  SensorColor(int pinRojo, int pinVerde, int pinAzul); 
 
-  //inicializar el sensor
-  bool iniciar() ;
+//inicializar el sensor
+  bool iniciar() ;
   void procesarColor();
 
   bool Rojo(); 
