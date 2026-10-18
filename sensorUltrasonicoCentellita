@@ -1,0 +1,267 @@
+#include "ultrasonico.h"
+#include "motor.h"
+#include "sensorcolor.h"
+
+//motores A DERECHO
+const int IN1 = 16;
+const int IN2 = 17;
+const int ENA = 22;
+
+//motores B IZQUIERDO
+const int IN3 = 18;
+const int IN4 = 19;
+const int ENB = 23;
+
+//sensor ultrasonico 1: FRENTE
+const int TRIGGER_1 = 32;
+const int ECHO_1 = 33;
+
+//sensor ultrasonico 2: DERECHA
+const int TRIGGER_2 = 25;
+const int ECHO_2 = 26;
+
+//sensor ultrasonico 3: IZQUIERDA
+const int TRIGGER_3 = 27;
+const int ECHO_3 = 14;
+
+//sensor de color
+const int PINR = 13;
+const int PING = 15;
+const int PINB = 2;
+
+//creamos aquí los objetos
+
+Motor motorA(IN1, IN2, ENA, 40); //motores lado DERECHO
+Motor motorB(IN3, IN4, ENB, 0); //motores lado IZQUIERDO
+
+
+SensorUltrasonico sensorFrente(TRIGGER_1, ECHO_1);
+SensorUltrasonico sensorDer(TRIGGER_2, ECHO_2);
+SensorUltrasonico sensorIzq(TRIGGER_3, ECHO_3);
+SensorColor sensorColor(PINR, PING, PINB);
+
+//Estructura para el historial de pasos (bonus point 1)
+
+enum EstadoRobot { 
+	Explorar, //Paredes y ultrasonicos
+	LlegadaMeta, //Se detiene cuando detecta el rojo de la meta
+	RegresarInicio, //Se regresa para el bonus 
+	Fin //Se apaga 
+};
+
+EstadoRobot estadoActual = Explorar;
+
+enum Movimiento {AVANZAR, GiroIzq, GiroDer, RETROCEDER}; 
+Movimiento historialPasos[150]; //Guarda hasta 150 pasos
+int totalPasos = 0; //Inicia en 0
+
+//Para guardar el recorrido
+void registrarPaso(Movimiento paso){
+	if (totalPasos < 150){
+		historialPasos[totalPasos] = paso;
+		totalPasos++;
+	}
+}
+
+void avanzarCentellita()
+	{
+		motorA.avanzar();
+		motorB.avanzar();
+	}
+	
+void frenarCentellita()
+	{
+		motorA.frenar();
+		motorB.frenar();
+	}
+	
+void retrocederCentellita()
+	{
+		motorA.retroceder();
+		motorB.retroceder();
+	}
+	
+void girarDerechaCentellita()
+	{
+		motorA.retroceder();
+		motorB.avanzar();
+	}
+	
+void girarIzquierdaCentellita()
+	{
+		motorA.avanzar();
+		motorB.retroceder();
+	}
+	
+void setup()
+{
+	Serial.begin (115200);
+	delay(1000);
+	
+	pinMode(ENA, OUTPUT);
+	digitalWrite(ENA, HIGH);
+	
+	pinMode(ENB, OUTPUT);
+	digitalWrite(ENB, HIGH);
+	
+	motorA.inicializar();
+	motorB.inicializar();
+	
+	sensorFrente.inicializar();
+	sensorIzq.inicializar();
+	sensorDer.inicializar();
+	sensorColor.iniciar();
+	
+	Serial.println("Centellita listo :p");
+	delay(2000);
+}
+
+void loop ()
+{
+	switch (estadoActual){
+		case Explorar: {
+			sensorColor.procesarColor();
+			
+			if(sensorColor.Turquesa()){
+				Serial.println("cuadro TURQUESA detectado");
+			}
+			else if (sensorColor.Amarillo()){
+				Serial.println("cuadro AMARILLO detectado")
+			}
+			else if (sensorColor.Naranja()){
+				Serial.printl("cuadro NARANJA detectado")
+			}
+			else if (sensorColor.Rosa()){
+				Serial.printl("cuadro ROSA detectado")
+			}
+
+			//Para el rojo de la meta
+			if (sensorColor.Rojo()){
+				frenarCentellita();
+				estadoActual = LlegadaMeta;
+				break;
+			}
+	
+		bool paredFrente = sensorFrente.paredCerca();
+		bool paredIzquierda = sensorIzq.paredCerca();
+		bool paredDerecha = sensorDer.paredCerca();
+	
+		if (paredFrente)
+		{
+			Serial.println("pared enfrente, buscando camino...");
+			frenarCentellita();
+			delay(200);
+	
+			if (!paredIzquierda)
+			{
+			Serial.println("Izquierda libre, girando a la izquierda");
+			girarIzquierdaCentellita();
+			delay(400);
+			registrarPaso(GiroIzq);
+			}
+		
+			else if (!paredDerecha)
+			{
+			Serial.println("Derecha libre, girando a la derecha");
+			girarDerechaCentellita();
+			delay(400);
+			registrarPaso(GiroDer);
+			}
+	
+			else 
+			{
+			Serial.println("camino sin salida, retrocediendo...");
+			retrocederCentellita();
+			delay(600);
+			registrarPaso(RETROCEDER);
+			}
+	}
+	
+	else
+	{
+		if (paredIzquierda && !paredDercha)
+		{
+			Serial.println("pared izquierda, girando a la derecha");
+			girarDerechaCentellita();
+			delay(100);
+		}
+		
+		else if (paredDerecha && !paredIzquierda)
+		{
+			Serial.println("pared derecha, girando a la izquierda");	
+			girarIzquierdaCentellita();
+			delay(100);
+		}
+		
+		else
+		{
+			Serial.println("camino libre, avanzando recto");
+			avanzarCentellita();
+			registrarPaso(AVANZAR);
+		}
+	}
+	break;
+}
+
+	case LlegadaMeta:
+	{
+		Serial.println("Meta Alcanzada! Preparando Bonus");
+		frenarCentellita();
+		delay(2000);
+		estadoActual = RegresarInicio;
+		break;
+	}
+
+	case RegresarInicio:
+	{		
+		Serial.println("Iniciando recorrido de regreso");
+
+		//Bucle invertido para leer las decisiones tomadas
+		for (int i = totalPasos - 1; i>=0; i--){
+			switch (historialPasos[i])
+			{
+				case GiroIzq:
+				//Si giró a la izquierda de ida, gira a la derecha de regreso
+				girarDerechaCentellita();
+				delay(400);
+				break;
+
+				case GiroDer:
+				//Si giró a la derecha de ida, gira a la izquierda de regreso
+				girarIzquierdaCentellita();
+				delay(400);
+				break;
+
+				case AVANZAR:
+				//El avance se queda igual
+				avanzarCentellita();
+				delay(400);
+				break;
+
+				case RETROCEDER:
+				//El retroceso de la ida se convierte en avance
+				avanzarCentellita();
+				delay(400);
+				break;
+			}
+		}
+	
+	frenarCentellita();
+	delay(200);
+	estadoActual = Fin;
+	break;
+}
+
+	case Fin:
+	{
+		frenarCentellita();
+		Serial.println("Se ha completado el bonus");
+		while (true)
+		{
+		//bucle infinito para terminarlo
+			delay(1000);
+		}
+		break;
+	}
+}
+}
